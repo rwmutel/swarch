@@ -1,0 +1,19 @@
+services:
+  facade:
+    image: facade:1.0
+    build: 
+      dockerfile: ./dockerfiles/facade
+    ports:
+      - "8000:8000"
+  logger:
+    image: logger:1.0
+    build: 
+      dockerfile: ./dockerfiles/logger
+    ports:
+      - "8001:8001"
+  messages:
+    image: messages:1.0
+    build: 
+      dockerfile: ./dockerfiles/messages
+    ports:
+      - "8002:8002"

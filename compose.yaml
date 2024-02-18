@@ -1,0 +1,21 @@
+services:
+  node-1:
+    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+    environment:
+      - HZ_CLUSTERNAME=lab-2
+    networks:
+      - default
+
+  node-2:
+    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+    environment:
+      - HZ_CLUSTERNAME=lab-2
+    networks:
+      - default
+
+  node-3:
+    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+    environment:
+      - HZ_CLUSTERNAME=lab-2
+    networks:
+      - default

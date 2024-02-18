@@ -26,3 +26,16 @@ services:
     image: hazelcast/management-center:5.3.3
     ports:
       - 8080:8080
+
+  incrementer-1:
+    image: incrementer:1.0
+    build: 
+      dockerfile: ./task_4/Dockerfile
+  incrementer-2:
+    image: incrementer:1.0
+    build: 
+      dockerfile: ./task_4/Dockerfile
+  incrementer-3:
+    image: incrementer:1.0
+    build: 
+      dockerfile: ./task_4/Dockerfile

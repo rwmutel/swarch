@@ -1,15 +1,28 @@
 services:
   node-1:
-    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+    image: hazelcast/hazelcast:5.3.6
+    ports:
+      - 5701:5701
     environment:
+      - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5701
       - HZ_CLUSTERNAME=lab-2
 
   node-2:
-    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+    image: hazelcast/hazelcast:5.3.6
+    ports:
+      - 5702:5701
     environment:
+      - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5702
       - HZ_CLUSTERNAME=lab-2
 
   node-3:
-    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+    image: hazelcast/hazelcast:5.3.6
+    ports:
+      - 5703:5701
     environment:
+      - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5703
       - HZ_CLUSTERNAME=lab-2
+  management:
+    image: hazelcast/management-center:5.3.3
+    ports:
+      - 8080:8080

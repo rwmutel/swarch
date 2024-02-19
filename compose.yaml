@@ -4,38 +4,71 @@ services:
     ports:
       - 5701:5701
     environment:
+      - HAZELCAST_CONFIG=hazelcast-docker.yaml
       - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5701
       - HZ_CLUSTERNAME=lab-2
+    networks:
+      default:
+        ipv4_address: 172.20.0.16
+    # for bounded queue
+    volumes:
+      - ./task_5/hazelcast-docker.yaml:/opt/hazelcast/hazelcast-docker.yaml
 
   node-2:
     image: hazelcast/hazelcast:5.3.6
     ports:
       - 5702:5701
     environment:
+      - HAZELCAST_CONFIG=hazelcast-docker.yaml
       - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5702
       - HZ_CLUSTERNAME=lab-2
+    # for bounded queue
+    volumes:
+      - ./task_5/hazelcast-docker.yaml:/opt/hazelcast/hazelcast-docker.yaml
 
   node-3:
     image: hazelcast/hazelcast:5.3.6
     ports:
       - 5703:5701
     environment:
+      - HAZELCAST_CONFIG=hazelcast-docker.yaml
       - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5703
       - HZ_CLUSTERNAME=lab-2
+    # for bounded queue
+    volumes:
+      - ./task_5/hazelcast-docker.yaml:/opt/hazelcast/hazelcast-docker.yaml
+
+  # uncomment to use Hazelcast Management Service (task 3 and further)
   management:
     image: hazelcast/management-center:5.3.3
     ports:
       - 8080:8080
 
-  incrementer-1:
-    image: incrementer:1.0
-    build: 
-      dockerfile: ./task_4/Dockerfile
-  incrementer-2:
-    image: incrementer:1.0
-    build: 
-      dockerfile: ./task_4/Dockerfile
-  incrementer-3:
-    image: incrementer:1.0
-    build: 
-      dockerfile: ./task_4/Dockerfile
+  # # uncomment for task 4
+  # incrementer-1:
+  #   image: incrementer:1.0
+  #   build: 
+  #     dockerfile: ./task_4/Dockerfile
+  # incrementer-2:
+  #   image: incrementer:1.0
+  #   build: 
+  #     dockerfile: ./task_4/Dockerfile
+  # incrementer-3:
+  #   image: incrementer:1.0
+  #   build: 
+  #     dockerfile: ./task_4/Dockerfile
+
+  # uncomment for task 5
+  producer:
+    image: producer:1.0
+    build:
+      dockerfile: ./task_5/prod.Dockerfile
+  # comment further lines to remove consumers for task 5.2
+  consumer-1:
+    image: consumer:1.0
+    build:
+      dockerfile: ./task_5/cons.Dockerfile
+  consumer-2:
+    image: consumer:1.0
+    build:
+      dockerfile: ./task_5/cons.Dockerfile

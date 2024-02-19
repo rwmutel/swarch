@@ -4,7 +4,7 @@ import hazelcast
 if __name__ == "__main__":
     print("Launched Client!")
     KEY = "key"
-    client = hazelcast.HazelcastClient(cluster_name="lab-2", cluster_members=["172.20.0.3:5701"])
+    client = hazelcast.HazelcastClient(cluster_name="lab-2", cluster_members=["172.20.0.16:5701"])
     print("Client connected to cluster")
     map = client.get_map("dist-map-no-lock").blocking()
     print("Client got the map and starts incrementing")

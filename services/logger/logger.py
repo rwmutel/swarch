@@ -2,7 +2,7 @@ import logging
 
 from fastapi import FastAPI
 
-from utils.models.message import Message
+from domain.message import Message
 
 app = FastAPI()
 

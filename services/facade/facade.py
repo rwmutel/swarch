@@ -1,7 +1,8 @@
-import uuid
-import requests
 import logging
+import random
+import uuid
 
+import requests
 from fastapi import FastAPI
 
 from utils.addresses import Address

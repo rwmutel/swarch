@@ -1,8 +1,7 @@
 import logging
 
-from fastapi import FastAPI
-
 from domain.message import Message
+from fastapi import FastAPI
 
 app = FastAPI()
 

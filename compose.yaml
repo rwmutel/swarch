@@ -16,24 +16,24 @@ services:
     image: logger:1.0
     build: 
       dockerfile: ./dockerfiles/logger
-    ports:
-      - "8001:8001"
+    # ports:
+    #   - "8001:8001"
     environment:
       - HZ_NODE_ADDRESS=hz-node-1:5701
   logger-2:
     image: logger:1.0
     build: 
       dockerfile: ./dockerfiles/logger
-    ports:
-      - "8001:8001"
+    # ports:
+    #   - "8001:8001"
     environment:
       - HZ_NODE_ADDRESS=hz-node-2:5701
   logger-3:
     image: logger:1.0
     build: 
       dockerfile: ./dockerfiles/logger
-    ports:
-      - "8001:8001"
+    # ports:
+    #   - "8001:8001"
     environment:
       - HZ_NODE_ADDRESS=hz-node-3:5701
   
@@ -46,12 +46,14 @@ services:
   hz-node-2:
     image: hazelcast/hazelcast:5.3.6
     ports:
-      - 5701:5701
+      - 5702:5701
     environment:
       - HZ_CLUSTERNAME=lab-3
+      - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5702
   hz-node-3:
     image: hazelcast/hazelcast:5.3.6
     ports:
-      - 5701:5701
+      - 5703:5701
     environment:
       - HZ_CLUSTERNAME=lab-3
+      - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5703

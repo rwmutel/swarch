@@ -1,7 +1,10 @@
-from enum import StrEnum
+from enum import Enum
+from typing import List
 
 
-class Address(StrEnum):
+class Address(Enum):
     FACADE = "http://facade:8000"
-    LOGGER = "http://logger:8001"
+    LOGGERS: List[str] = ["http://logger-1:8001",
+                          "http://logger-2:8001",
+                          "http://logger-3:8001"]
     MESSAGES = "http://messages:8002"

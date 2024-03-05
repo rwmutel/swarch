@@ -1,19 +1,42 @@
 import logging
+import os
+from contextlib import asynccontextmanager
 
+import hazelcast
+from hazelcast.proxy.map import Map
 from domain.message import Message
 from fastapi import FastAPI
 
-app = FastAPI()
-
 logger = logging.getLogger("uvicorn")
-msg_map = dict()
+
+hz_client: hazelcast.HazelcastClient = None
+msg_map: Map = None
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.log(logging.INFO, "Starting Logging Server")
+    logger.log(logging.INFO,
+               f"Connecting to Hazelcast at {os.environ['HZ_NODE_ADDRESS']}...")
+    hz_client = hazelcast.HazelcastClient(cluster_name="lab-3",
+                                          cluster_members=[
+                                              os.environ["HZ_NODE_ADDRESS"]
+                                          ])
+    logger.log(logging.INFO, "Connected to Hazelcast")
+    msg_map = hz_client.get_map("messages")
+    yield
+    hz_client.shutdown()
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/")
 def post_message(msg: Message):
-    if msg.uid in msg_map:
+    msg_map.lock(msg.uid)
+    if msg_map.contains_key(msg.uid):
         logger.warning(f"Message with id {msg.uid} is already in the map")
-    msg_map[msg.uid] = msg.text
+    msg_map.put(msg.uid, msg.text)
+    msg_map.unlock(msg.uid)
     logger.info(f"Current messages: {msg_map.values()}")
 
 

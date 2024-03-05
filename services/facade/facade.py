@@ -13,23 +13,27 @@ logger = logging.getLogger("uvicorn")
 
 
 @app.post("/{msg}")
-def post_message(msg):
+def post_message(msg: str):
     uid = str(uuid.uuid4())
     payload = {"uid": uid, "text": msg}
-    res = requests.post(url=Address.LOGGER, json=payload)
+    logger_url: str = random.choice(Address.LOGGERS)
+    res = requests.post(url=logger_url, json=payload)
     if res.status_code != 200:
-        logger.critical("Error sending POST request to logging service!")
+        logger.critical(
+            f"Error sending POST request to logging service at {logger_url}!")
     else:
         logger.info(
             f"Sent POST request with message {msg}" +
-            f"with uuid {uid} to logging service")
+            f"with uuid {uid} to logging service at {logger_url}")
 
 
 @app.get("/")
 def get_messages():
-    log_res = requests.get(url=Address.LOGGER)
+    logger_url = random.choice(Address.LOGGERS)
+    log_res = requests.get(url=logger_url)
     if log_res.status_code != 200:
-        logger.critical("Error sending GET request to logging service!")
+        logger.critical(
+            f"Error sending GET request to logging service at {logger_url}!")
 
     msg_res = requests.get(url=Address.MESSAGES)
     if msg_res.status_code != 200:
@@ -38,7 +42,8 @@ def get_messages():
     messages_service_data = msg_res.text
     logging_service_data = log_res.json()["messages"]
     logger.info(
-        f"GET request to logging service result: {logging_service_data}")
+        f"GET request to logging service (at {logger_url}) \
+            result: {logging_service_data}")
     logger.info(
         f"GET request to messages service result: {messages_service_data}")
     return str(logging_service_data) + "; " + str(messages_service_data)

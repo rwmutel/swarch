@@ -17,14 +17,18 @@ msg_map: Map = None
 async def lifespan(app: FastAPI):
     logger.log(logging.INFO, "Starting Logging Server")
     logger.log(logging.INFO,
-               f"Connecting to Hazelcast at {os.environ['HZ_NODE_ADDRESS']}...")
+               f"Connecting to Hazelcast @ {os.environ['HZ_NODE_ADDRESS']}...")
     hz_client = hazelcast.HazelcastClient(cluster_name="lab-3",
                                           cluster_members=[
                                               os.environ["HZ_NODE_ADDRESS"]
                                           ])
     logger.log(logging.INFO, "Connected to Hazelcast")
-    msg_map = hz_client.get_map("messages")
+    global msg_map
+    msg_map = hz_client.get_map("messages").blocking()
     yield
+    logger.log(logging.INFO,
+               f"Stopping Logging Server Connected to Hazelcast Node at \
+                {os.environ['HZ_NODE_ADDRESS']}")
     hz_client.shutdown()
 
 app = FastAPI(lifespan=lifespan)
@@ -37,7 +41,8 @@ def post_message(msg: Message):
         logger.warning(f"Message with id {msg.uid} is already in the map")
     msg_map.put(msg.uid, msg.text)
     msg_map.unlock(msg.uid)
-    logger.info(f"Current messages: {msg_map.values()}")
+    logger.info(
+        f"Added {msg.text=} to map. Current messages: {msg_map.values()}")
 
 
 @app.get("/")

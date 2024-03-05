@@ -16,24 +16,18 @@ services:
     image: logger:1.0
     build: 
       dockerfile: ./dockerfiles/logger
-    # ports:
-    #   - "8001:8001"
     environment:
       - HZ_NODE_ADDRESS=hz-node-1:5701
   logger-2:
     image: logger:1.0
     build: 
       dockerfile: ./dockerfiles/logger
-    # ports:
-    #   - "8001:8001"
     environment:
       - HZ_NODE_ADDRESS=hz-node-2:5701
   logger-3:
     image: logger:1.0
     build: 
       dockerfile: ./dockerfiles/logger
-    # ports:
-    #   - "8001:8001"
     environment:
       - HZ_NODE_ADDRESS=hz-node-3:5701
   

@@ -1,9 +1,10 @@
 import logging
 import os
 from contextlib import asynccontextmanager
+
 from domain.message import Message
-from logger_service import HazelcastLogger
 from fastapi import FastAPI
+from logger_service import HazelcastLogger
 
 logger = logging.getLogger("uvicorn")
 hz_logger: HazelcastLogger = None

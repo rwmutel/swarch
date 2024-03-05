@@ -1,8 +1,9 @@
-from domain.message import Message
-from typing import List
-import hazelcast
 import logging
 import os
+from typing import List
+
+import hazelcast
+from domain.message import Message
 
 logger = logging.getLogger("uvicorn")
 

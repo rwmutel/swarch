@@ -1,7 +1,9 @@
-import uuid
-import random
-import requests
 import logging
+import random
+import uuid
+
+import requests
+
 from utils.addresses import Address
 
 logger = logging.getLogger("uvicorn")

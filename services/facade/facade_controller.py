@@ -1,5 +1,4 @@
 import facade_service
-
 from fastapi import FastAPI
 
 app = FastAPI()

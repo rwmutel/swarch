@@ -1,19 +1,13 @@
-import logging
-import random
 import uuid
-
+import random
 import requests
-from fastapi import FastAPI
-
+import logging
 from utils.addresses import Address
-
-app = FastAPI()
 
 logger = logging.getLogger("uvicorn")
 
 
-@app.post("/{msg}")
-def post_message(msg: str):
+def add_message(msg: str):
     uid = str(uuid.uuid4())
     payload = {"uid": uid, "text": msg}
     logger_url: str = random.choice(Address["LOGGERS"])
@@ -21,13 +15,15 @@ def post_message(msg: str):
     if res.status_code != 200:
         logger.critical(
             f"Error sending POST request to logging service at {logger_url}!")
+        return "Error sending POST request to logging service!"
     else:
         logger.info(
             f"Sent POST request with message {msg}" +
             f"with uuid {uid} to logging service at {logger_url}")
+        return f"Added message {msg} with uuid {uid} \
+                 to logging service at {logger_url}"
 
 
-@app.get("/")
 def get_messages():
     logger_url = random.choice(Address["LOGGERS"])
     log_res = requests.get(url=logger_url)

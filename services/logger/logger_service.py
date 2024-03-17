@@ -17,8 +17,9 @@ class HazelcastLogger:
         logger.log(logging.INFO,
                    "Connecting to Hazelcast @ "
                    f"{os.environ['HZ_NODE_ADDRESS']}...")
-        self.client = hazelcast.HazelcastClient(cluster_name=cluster_name,
-                                                cluster_members=cluster_members)
+        self.client = hazelcast.HazelcastClient(
+            cluster_name=cluster_name,
+            cluster_members=cluster_members)
         self.msg_map = self.client.get_map(self.MAP_NAME).blocking()
 
     def add_message(self, msg: Message):

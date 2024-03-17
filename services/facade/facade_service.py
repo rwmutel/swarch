@@ -22,8 +22,8 @@ def add_message(msg: str):
         logger.info(
             f"Sent POST request with message {msg}" +
             f"with uuid {uid} to logging service at {logger_url}")
-        return f"Added message {msg} with uuid {uid} \
-                 to logging service at {logger_url}"
+        return (f"Added message {msg} with uuid {uid} "
+                f"to logging service at {logger_url}")
 
 
 def get_messages():
@@ -40,8 +40,8 @@ def get_messages():
     messages_service_data = msg_res.text
     logging_service_data = log_res.json()["messages"]
     logger.info(
-        f"GET request to logging service (at {logger_url}) \
-            result: {logging_service_data}")
+        f"GET request to logging service (at {logger_url})"
+        f"result: {logging_service_data}")
     logger.info(
         f"GET request to messages service result: {messages_service_data}")
     return str(logging_service_data) + "; " + str(messages_service_data)

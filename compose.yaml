@@ -2,32 +2,32 @@ services:
   facade:
     image: facade:1.0
     build: 
-      dockerfile: ./dockerfiles/facade
+      dockerfile: ./services/facade/Dockerfile
     ports:
       - "8000:8000"
   messages:
     image: messages:1.0
     build: 
-      dockerfile: ./dockerfiles/messages
+      dockerfile: ./services/messages/Dockerfile
     ports:
       - "8002:8002"
 
   logger-1:
     image: logger:1.0
     build: 
-      dockerfile: ./dockerfiles/logger
+      dockerfile: ./services/logger/Dockerfile
     environment:
       - HZ_NODE_ADDRESS=hz-node-1:5701
   logger-2:
     image: logger:1.0
     build: 
-      dockerfile: ./dockerfiles/logger
+      dockerfile: ./services/logger/Dockerfile
     environment:
       - HZ_NODE_ADDRESS=hz-node-2:5701
   logger-3:
     image: logger:1.0
     build: 
-      dockerfile: ./dockerfiles/logger
+      dockerfile: ./services/logger/Dockerfile
     environment:
       - HZ_NODE_ADDRESS=hz-node-3:5701
   

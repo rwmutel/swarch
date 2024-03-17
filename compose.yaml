@@ -1,0 +1,53 @@
+services:
+  facade:
+    image: facade:1.0
+    build: 
+      dockerfile: ./dockerfiles/facade
+    ports:
+      - "8000:8000"
+  messages:
+    image: messages:1.0
+    build: 
+      dockerfile: ./dockerfiles/messages
+    ports:
+      - "8002:8002"
+
+  logger-1:
+    image: logger:1.0
+    build: 
+      dockerfile: ./dockerfiles/logger
+    environment:
+      - HZ_NODE_ADDRESS=hz-node-1:5701
+  logger-2:
+    image: logger:1.0
+    build: 
+      dockerfile: ./dockerfiles/logger
+    environment:
+      - HZ_NODE_ADDRESS=hz-node-2:5701
+  logger-3:
+    image: logger:1.0
+    build: 
+      dockerfile: ./dockerfiles/logger
+    environment:
+      - HZ_NODE_ADDRESS=hz-node-3:5701
+  
+  hz-node-1:
+    image: hazelcast/hazelcast:5.3.6
+    ports:
+      - 5701:5701
+    environment:
+      - HZ_CLUSTERNAME=lab-3
+  hz-node-2:
+    image: hazelcast/hazelcast:5.3.6
+    ports:
+      - 5702:5701
+    environment:
+      - HZ_CLUSTERNAME=lab-3
+      - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5702
+  hz-node-3:
+    image: hazelcast/hazelcast:5.3.6
+    ports:
+      - 5703:5701
+    environment:
+      - HZ_CLUSTERNAME=lab-3
+      - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5703

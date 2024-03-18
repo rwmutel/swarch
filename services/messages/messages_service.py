@@ -49,5 +49,4 @@ async def listen():
             logger.info(f"Received msgs: {msgs}")
             for msg in msgs:
                 msg_map[str(msg.key)] = msg.value
-            logger.info(msg_map)
         await asyncio.sleep(POLL_INTERVAL_MS / 1000)

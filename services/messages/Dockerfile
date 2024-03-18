@@ -7,5 +7,8 @@ COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./services/messages /code/messages
+COPY ./utils /code/utils
 
-CMD ["uvicorn", "messages.messages:app", "--host", "0.0.0.0", "--port", "8002"]
+ENV PYTHONPATH=${PYTHONPATH}:/code:/code/messages
+
+CMD ["uvicorn", "messages.messages_controller:app", "--host", "0.0.0.0", "--port", "8002"]

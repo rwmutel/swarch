@@ -1,4 +1,5 @@
 import facade_service
+from domain.message import Message
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -6,7 +7,9 @@ app = FastAPI()
 
 @app.post("/{msg}")
 def post_message(msg: str):
-    return facade_service.add_message(msg)
+    msg_obj = Message(text=msg)
+    facade_service.add_message(msg_obj)
+    return facade_service.log_message(msg_obj)
 
 
 @app.get("/")

@@ -5,12 +5,19 @@ services:
       dockerfile: ./services/facade/Dockerfile
     ports:
       - "8000:8000"
+
   messages:
     image: messages:1.0
     build: 
       dockerfile: ./services/messages/Dockerfile
     ports:
       - "8002:8002"
+  # messages-2:
+  #   image: messages:1.0
+  #   build: 
+  #     dockerfile: ./services/messages/Dockerfile
+  #   ports:
+  #     - "8002:8003"
 
   logger-1:
     image: logger:1.0
@@ -51,3 +58,21 @@ services:
     environment:
       - HZ_CLUSTERNAME=lab-3
       - HZ_NETWORK_LOCALADDRESS=0.0.0.0:5703
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - 2181:2181
+  mq:
+    image: wurstmeister/kafka
+    ports:
+      - 9092:9092
+    networks:
+      - default
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://mq:9092,OUTSIDE://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "messages:1:1"

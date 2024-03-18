@@ -1,29 +1,39 @@
 import logging
 import random
-import uuid
 
 import requests
+from domain.message import Message
+from kafka.producer import KafkaProducer
 
 from utils.addresses import Address
 
 logger = logging.getLogger("uvicorn")
+mq_producer = KafkaProducer(bootstrap_servers=Address["KAFKA"],
+                            value_serializer=str.encode)
 
 
-def add_message(msg: str):
-    uid = str(uuid.uuid4())
-    payload = {"uid": uid, "text": msg}
+def log_message(msg: Message):
     logger_url: str = random.choice(Address["LOGGERS"])
-    res = requests.post(url=logger_url, json=payload)
+    res = requests.post(url=logger_url, json=msg.model_dump(mode="json"))
     if res.status_code != 200:
         logger.critical(
-            f"Error sending POST request to logging service at {logger_url}!")
+            f"Error sending POST request to logging service at {logger_url}! "
+            f"Details: {res.json()}")
         return "Error sending POST request to logging service!"
     else:
         logger.info(
-            f"Sent POST request with message {msg}" +
-            f"with uuid {uid} to logging service at {logger_url}")
-        return (f"Added message {msg} with uuid {uid} "
+            f"Sent POST request with message {msg.text}" +
+            f"with uuid {str(msg.uid)} to logging service at {logger_url}")
+        return (f"Added message {msg.text} with uuid {str(msg.uid)} "
                 f"to logging service at {logger_url}")
+
+
+def add_message(msg: Message):
+    mq_producer.send(topic="messages",
+                     key=msg.uid.bytes,
+                     value=msg.text).get()
+    logger.info(f"Sent message {msg.text} with uuid "
+                f"{str(msg.uid)} to Kafka Message Queue")
 
 
 def get_messages():

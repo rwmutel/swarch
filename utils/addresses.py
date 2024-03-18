@@ -6,5 +6,6 @@ Address: Dict[str, str | List[str]] = {
                 "http://logger-2:8001",
                 "http://logger-3:8001"
                 ],
-    "MESSAGES": "http://messages:8002"
+    "MESSAGES": "http://messages:8002",
+    "KAFKA": "http://mq:9092"
 }

@@ -1,9 +1,8 @@
+import asyncio
 import logging
 from typing import Dict
-import asyncio
-import hazelcast
 
-import os
+import hazelcast
 
 from utils.addresses import Address
 

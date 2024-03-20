@@ -1,10 +1,9 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
-import asyncio
 
 import messages_service
 from fastapi import FastAPI
-
 
 logger = logging.getLogger("uvicorn")
 

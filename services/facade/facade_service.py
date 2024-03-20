@@ -1,10 +1,9 @@
 import logging
 import random
-import time
 
+import hazelcast
 import requests
 from domain.message import Message
-import hazelcast
 
 from utils.addresses import Address
 

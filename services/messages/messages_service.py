@@ -6,12 +6,14 @@ import asyncio
 from kafka import KafkaConsumer
 from kafka.errors import NoBrokersAvailable
 import time
+import os
 
 from utils.addresses import Address
 
 logger = logging.getLogger("uvicorn")
 msg_map: Dict[str, str] = dict()
 consumer: KafkaConsumer = None
+GROUP_ID = os.environ.get("KAFKA_GROUP_ID")
 POLL_INTERVAL_MS = 200
 
 
@@ -23,10 +25,12 @@ def setup_client():
                 "messages",
                 bootstrap_servers=Address["KAFKA"],
                 key_deserializer=lambda x: uuid.UUID(bytes=x),
-                value_deserializer=lambda x: x.decode("utf-8")
+                value_deserializer=lambda x: x.decode("utf-8"),
+                group_id=GROUP_ID
             )
-        except NoBrokersAvailable: 
-            logger.critical("No Kafka brokers available! Retrying in 3 seconds...")
+        except NoBrokersAvailable:
+            logger.critical(
+                "No Kafka brokers available! Retrying in 3 seconds...")
             time.sleep(3)
     logger.info("Consumer connected to Kafka topic")
 

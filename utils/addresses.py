@@ -8,5 +8,5 @@ Address: Dict[str, str | List[str]] = {
                 ],
     "MESSAGES": ["http://messages-1:8002",
                  "http://messages-2:8002"],
-    "KAFKA": "kafka:9092"
+    "HZ_MQ": "hz-mq:5701"
 }

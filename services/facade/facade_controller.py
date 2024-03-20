@@ -1,9 +1,16 @@
+from contextlib import asynccontextmanager
 import facade_service
 import uuid
 from domain.message import Message
 from fastapi import FastAPI
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    facade_service.setup_mq()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/{msg}")

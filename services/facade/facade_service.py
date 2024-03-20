@@ -4,19 +4,22 @@ import time
 
 import requests
 from domain.message import Message
-from confluent_kafka import Producer, KafkaException
+import hazelcast
 
 from utils.addresses import Address
 
 logger = logging.getLogger("uvicorn")
-mq_producer: Producer = None
-while mq_producer is None:
-    try:
-        mq_producer = Producer({"bootstrap.servers": Address["KAFKA"]})
-    except KafkaException as e:
-        logger.critical("No Kafka brokers available! Retrying in 3 seconds...")
-        logger.critical(e.args[0])
-        time.sleep(3)
+mq = None
+
+
+def setup_mq():
+    global mq
+    hz_client = hazelcast.HazelcastClient(
+        cluster_name="lab-3-q",
+        cluster_members=[Address["HZ_MQ"]]
+    )
+    mq = hz_client.get_queue("messages")
+    logger.info("Connected to Hazelcast and initialized Message Queue")
 
 
 def log_message(msg: Message):
@@ -29,20 +32,16 @@ def log_message(msg: Message):
         return "Error sending POST request to logging service!"
     else:
         logger.info(
-            f"Sent POST request with message {msg.text}" +
+            f"Sent POST request with message {msg.text} " +
             f"with uuid {str(msg.uid)} to logging service at {logger_url}")
         return (f"Added message {msg.text} with uuid {str(msg.uid)} "
                 f"to logging service at {logger_url}")
 
 
 def add_message(msg: Message):
-    mq_producer.produce(topic="messages",
-                        key=msg.uid.bytes,
-                        value=msg.text)
-    mq_producer.poll(0)
-    mq_producer.flush()
+    mq.put(msg.model_dump(mode="json")).result()
     logger.info(f"Sent message {msg.text} with uuid "
-                f"{str(msg.uid)} to Kafka Message Queue")
+                f"{str(msg.uid)} to Hazelcast Message Queue")
 
 
 def get_messages():

@@ -4,19 +4,18 @@ import time
 
 import requests
 from domain.message import Message
-from kafka.producer import KafkaProducer
-from kafka.errors import NoBrokersAvailable
+from confluent_kafka import Producer, KafkaException
 
 from utils.addresses import Address
 
 logger = logging.getLogger("uvicorn")
-mq_producer: KafkaProducer = None
+mq_producer: Producer = None
 while mq_producer is None:
     try:
-        mq_producer = KafkaProducer(bootstrap_servers=Address["KAFKA"],
-                                    value_serializer=str.encode)
-    except NoBrokersAvailable:
+        mq_producer = Producer({"bootstrap.servers": Address["KAFKA"]})
+    except KafkaException as e:
         logger.critical("No Kafka brokers available! Retrying in 3 seconds...")
+        logger.critical(e.args[0])
         time.sleep(3)
 
 
@@ -37,9 +36,11 @@ def log_message(msg: Message):
 
 
 def add_message(msg: Message):
-    mq_producer.send(topic="messages",
-                     key=msg.uid.bytes,
-                     value=msg.text).get(timeout=10)
+    mq_producer.produce(topic="messages",
+                        key=msg.uid.bytes,
+                        value=msg.text)
+    mq_producer.poll(0)
+    mq_producer.flush()
     logger.info(f"Sent message {msg.text} with uuid "
                 f"{str(msg.uid)} to Kafka Message Queue")
 

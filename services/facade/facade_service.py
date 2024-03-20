@@ -45,21 +45,23 @@ def add_message(msg: Message):
 
 
 def get_messages():
-    logger_url = random.choice(Address["LOGGERS"])
-    log_res = requests.get(url=logger_url)
+    log_res = requests.get(
+        url=(logger_url := random.choice(Address["LOGGERS"])))
     if log_res.status_code != 200:
         logger.critical(
             f"Error sending GET request to logging service at {logger_url}!")
 
-    msg_res = requests.get(url=Address["MESSAGES"])
+    msg_res = requests.get(url=(msg_url := random.choice(Address["MESSAGES"])))
     if msg_res.status_code != 200:
-        logger.critical("Error sending GET request to messages service!")
+        logger.critical(
+            f"Error sending GET request to messages service at {msg_url}!")
 
     messages_service_data = msg_res.text
     logging_service_data = log_res.json()["messages"]
     logger.info(
-        f"GET request to logging service (at {logger_url})"
+        f"GET request to logging service (at {logger_url}) "
         f"result: {logging_service_data}")
     logger.info(
-        f"GET request to messages service result: {messages_service_data}")
+        f"GET request to messages service (at {msg_url}) "
+        f"result: {messages_service_data}")
     return str(logging_service_data) + "; " + str(messages_service_data)

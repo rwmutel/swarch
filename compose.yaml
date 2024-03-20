@@ -9,21 +9,28 @@ services:
       kafka: 
         condition: service_healthy
 
-  messages:
+  messages-1:
     image: messages:1.0
     build: 
       dockerfile: ./services/messages/Dockerfile
     ports:
       - "8002:8002"
+    environment:
+      - KAFKA_GROUP_ID=m1
     depends_on:
       kafka: 
         condition: service_healthy
-  # messages-2:
-  #   image: messages:1.0
-  #   build: 
-  #     dockerfile: ./services/messages/Dockerfile
-  #   ports:
-  #     - "8002:8003"
+  messages-2:
+    image: messages:1.0
+    build: 
+      dockerfile: ./services/messages/Dockerfile
+    ports:
+      - "8003:8002"
+    environment:
+      - KAFKA_GROUP_ID=m2
+    depends_on:
+      kafka: 
+        condition: service_healthy
 
   logger-1:
     image: logger:1.0

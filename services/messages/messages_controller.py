@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 import messages_service
 from fastapi import FastAPI
 
+
 logger = logging.getLogger("uvicorn")
 
 
@@ -13,6 +14,7 @@ async def lifespan(app: FastAPI):
     messages_service.setup_client()
     asyncio.create_task(messages_service.listen())
     yield
+
 
 app = FastAPI(lifespan=lifespan)
 

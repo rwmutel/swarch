@@ -8,7 +8,6 @@ from utils.addresses import Address
 
 logger = logging.getLogger("uvicorn")
 msg_map: Dict[str, str] = dict()
-POLL_INTERVAL_MS = 200
 mq = None
 
 
